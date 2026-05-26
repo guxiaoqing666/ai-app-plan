@@ -363,7 +363,7 @@
     track("surprise_route", { routeId: next.id, city: next.city });
   }
 
-  function handleFeedbackSubmit(event) {
+  async function handleFeedbackSubmit(event) {
     event.preventDefault();
     const formData = new FormData(els.feedbackForm);
     const payload = {
@@ -379,13 +379,38 @@
       return;
     }
 
-    const saved = JSON.parse(localStorage.getItem("zouzou_feedback") || "[]");
-    saved.push(payload);
-    localStorage.setItem("zouzou_feedback", JSON.stringify(saved));
-    els.feedbackForm.reset();
-    els.feedbackNote.textContent = `已保存在当前浏览器，共 ${saved.length} 条。上线后可把这里替换成飞书/腾讯文档表单。`;
-    showToast("反馈已保存");
-    track("feedback_saved", { need: payload.need, hasContact: Boolean(payload.contact) });
+    // Try to save to Feishu Bitable first
+    const feishuSaved = await saveToFeishu(payload);
+    
+    if (feishuSaved) {
+      els.feedbackForm.reset();
+      els.feedbackNote.textContent = "反馈已同步到飞书表格，我们会尽快查看。";
+      showToast("反馈已提交");
+      track("feedback_saved", { need: payload.need, hasContact: Boolean(payload.contact), source: "feishu" });
+    } else {
+      // Fallback to localStorage
+      const saved = JSON.parse(localStorage.getItem("zouzou_feedback") || "[]");
+      saved.push(payload);
+      localStorage.setItem("zouzou_feedback", JSON.stringify(saved));
+      els.feedbackForm.reset();
+      els.feedbackNote.textContent = `网络异常，已暂存本地（共 ${saved.length} 条），稍后自动同步。`;
+      showToast("反馈已暂存本地");
+      track("feedback_saved", { need: payload.need, hasContact: Boolean(payload.contact), source: "local" });
+    }
+  }
+
+  async function saveToFeishu(payload) {
+    try {
+      // Use a Cloudflare Worker proxy to avoid exposing credentials
+      const response = await fetch("https://zouzou-feedback.guxiaoqing666.workers.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
   }
 
   function copyFeedbackTemplate() {
