@@ -1,0 +1,17 @@
+{
+  "name": "zouzou-ai-citywalk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static PWA MVP for an AI-style Citywalk route generator.",
+  "scripts": {
+    "start": "node scripts/local-server.js",
+    "check": "node --check app.js && node --check data/routes.js && node scripts/validate-routes.js"
+  },
+  "keywords": [
+    "citywalk",
+    "pwa",
+    "static-site",
+    "cloudflare-pages"
+  ],
+  "license": "UNLICENSED"
+}

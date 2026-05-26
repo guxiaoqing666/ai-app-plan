@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="description" content="走走AI：把周末灵感变成一条能出门的 Citywalk 路线。">
+    <title>走走AI | Citywalk 路线生成器</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.svg">
+    <link rel="preload" href="data/routes.js" as="script">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#routes">跳到路线列表</a>
+
+    <header class="app-header">
+      <div class="brand-lockup" aria-label="走走AI">
+        <img src="assets/icon.svg" width="40" height="40" alt="">
+        <div>
+          <p class="brand-name">走走AI</p>
+          <p class="brand-line">周末路线生成器</p>
+        </div>
+      </div>
+      <button class="icon-button" id="installButton" type="button" hidden aria-label="添加到桌面">
+        <span aria-hidden="true">+</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero-panel" aria-labelledby="heroTitle">
+        <div class="hero-copy">
+          <p class="eyebrow">Citywalk beta</p>
+          <h1 id="heroTitle">把周末灵感变成一条能出门的路线</h1>
+          <p class="hero-subtitle">先选城市和偏好，拿一份半日或一日路线。首版使用预生成路线，后续会升级成实时 AI。</p>
+        </div>
+        <div class="map-snapshot" aria-hidden="true">
+          <img src="assets/city-map-card.svg" alt="">
+        </div>
+      </section>
+
+      <section class="filter-shell" aria-labelledby="filterTitle">
+        <div class="section-heading">
+          <p class="eyebrow">Route picker</p>
+          <h2 id="filterTitle">筛选路线</h2>
+        </div>
+
+        <form class="filter-grid" id="routeFilters">
+          <label>
+            <span>城市</span>
+            <select name="city" id="cityFilter"></select>
+          </label>
+          <label>
+            <span>时长</span>
+            <select name="duration" id="durationFilter"></select>
+          </label>
+          <label>
+            <span>预算</span>
+            <select name="budget" id="budgetFilter"></select>
+          </label>
+          <label>
+            <span>同行</span>
+            <select name="companion" id="companionFilter"></select>
+          </label>
+          <label>
+            <span>偏好</span>
+            <select name="interest" id="interestFilter"></select>
+          </label>
+          <label>
+            <span>步行</span>
+            <select name="intensity" id="intensityFilter"></select>
+          </label>
+        </form>
+
+        <div class="quick-actions" aria-label="快捷操作">
+          <button class="pill-button" id="surpriseButton" type="button">换一条</button>
+          <button class="pill-button" id="resetButton" type="button">重置</button>
+          <button class="pill-button primary" id="feedbackShortcut" type="button">反馈/预约</button>
+        </div>
+      </section>
+
+      <section class="results-section" id="routes" aria-labelledby="resultsTitle">
+        <div class="section-heading inline">
+          <div>
+            <p class="eyebrow">Recommended</p>
+            <h2 id="resultsTitle">推荐路线</h2>
+          </div>
+          <p class="result-count" id="resultCount"></p>
+        </div>
+        <div class="route-list" id="routeList"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <h3>暂时没有完全匹配</h3>
+          <p>试试降低预算限制，或把步行强度改成“不限”。</p>
+          <button class="pill-button primary" id="emptyResetButton" type="button">查看全部</button>
+        </div>
+      </section>
+
+      <section class="detail-section" id="routeDetail" aria-live="polite"></section>
+
+      <section class="feedback-section" id="feedback" aria-labelledby="feedbackTitle">
+        <div class="section-heading">
+          <p class="eyebrow">Beta list</p>
+          <h2 id="feedbackTitle">反馈和高级版预约</h2>
+          <p>留下联系方式或建议，用来判断下一步是否接真实 AI、导出图片和付费功能。</p>
+        </div>
+        <form class="feedback-form" id="feedbackForm">
+          <label>
+            <span>联系方式</span>
+            <input name="contact" type="text" autocomplete="off" placeholder="微信 / 邮箱 / 手机号">
+          </label>
+          <label>
+            <span>你最想要的路线</span>
+            <select name="need">
+              <option value="更多城市">更多城市</option>
+              <option value="实时AI生成">实时 AI 生成</option>
+              <option value="图片/PDF导出">图片/PDF 导出</option>
+              <option value="约会/聚会路线">约会/聚会路线</option>
+              <option value="旅行攻略">旅行攻略</option>
+            </select>
+          </label>
+          <label class="wide">
+            <span>一句反馈</span>
+            <textarea name="message" rows="4" placeholder="哪里有用，哪里不准，或者你愿意为什么功能付费。"></textarea>
+          </label>
+          <div class="form-actions">
+            <button class="primary-button" type="submit">保存反馈</button>
+            <button class="secondary-button" id="copyFeedbackButton" type="button">复制反馈模板</button>
+          </div>
+          <p class="form-note" id="feedbackNote">静态版会先把反馈保存在当前浏览器，也可以复制后发给运营微信。</p>
+        </form>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="页面导航">
+      <a href="#routeFilters">筛选</a>
+      <a href="#routes">路线</a>
+      <a href="#feedback">反馈</a>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="data/routes.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

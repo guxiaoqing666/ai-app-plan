@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 560" role="img" aria-label="Citywalk route preview">
+  <defs>
+    <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse">
+      <path d="M38 0H0v38" fill="none" stroke="#d7e5de" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect x="32" y="28" width="456" height="504" rx="26" fill="#fffdfa" stroke="#dce6e2" stroke-width="4"/>
+  <rect x="58" y="62" width="404" height="320" rx="18" fill="url(#grid)"/>
+  <path d="M100 314 C150 228 214 270 250 198 S354 126 418 190" fill="none" stroke="#0f766e" stroke-width="12" stroke-linecap="round"/>
+  <path d="M104 318 C154 232 214 274 250 202 S354 130 414 194" fill="none" stroke="#fffdfa" stroke-width="4" stroke-linecap="round" opacity=".72"/>
+  <g fill="#fffdfa" stroke="#0f766e" stroke-width="8">
+    <circle cx="104" cy="316" r="18"/>
+    <circle cx="250" cy="200" r="18"/>
+    <circle cx="416" cy="190" r="18"/>
+  </g>
+  <circle cx="104" cy="316" r="7" fill="#e45c3a"/>
+  <circle cx="250" cy="200" r="7" fill="#f4b942"/>
+  <circle cx="416" cy="190" r="7" fill="#e45c3a"/>
+  <rect x="82" y="414" width="238" height="18" rx="9" fill="#17201f"/>
+  <rect x="82" y="448" width="356" height="14" rx="7" fill="#63716f" opacity=".55"/>
+  <rect x="82" y="478" width="286" height="14" rx="7" fill="#63716f" opacity=".35"/>
+  <rect x="348" y="404" width="90" height="52" rx="12" fill="#f4b942"/>
+  <path d="M370 430h46" stroke="#5a2b18" stroke-width="8" stroke-linecap="round"/>
+</svg>

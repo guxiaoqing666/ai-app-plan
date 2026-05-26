@@ -1,0 +1,27 @@
+{
+  "name": "走走AI Citywalk",
+  "short_name": "走走AI",
+  "description": "把周末灵感变成一条能出门的 Citywalk 路线。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffdfa",
+  "theme_color": "#0f766e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/maskable-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["travel", "lifestyle", "productivity"],
+  "lang": "zh-CN"
+}
