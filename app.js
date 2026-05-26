@@ -452,7 +452,7 @@
 
       const response = await fetch("https://open.feishu.cn/open-apis/bot/v2/hook/8710c1a6-cb9e-4abb-b50e-a00a03a07937", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify(feishuPayload)
       });
       
