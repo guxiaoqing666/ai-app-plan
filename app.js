@@ -458,8 +458,8 @@
       const botResult = await botResponse.json();
       const botOk = botResult.code === 0;
 
-      // 2. Save to Wiki Bitable (permanent archive) - direct from frontend
-      const wikiTokenResp = await fetch("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", {
+      // 2. Save to Bitable (permanent archive) - direct from frontend
+      const bitableTokenResp = await fetch("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
@@ -467,14 +467,14 @@
           app_secret: "kdTUXIWgRBT3csN9Bfbvbh2M4eFTpG35"
         })
       });
-      const wikiTokenData = await wikiTokenResp.json();
-      let wikiOk = false;
+      const bitableTokenData = await bitableTokenResp.json();
+      let bitableOk = false;
       
-      if (wikiTokenData.code === 0) {
-        const wikiRecordResp = await fetch("https://open.feishu.cn/open-apis/bitable/v1/apps/ALrkbE8ohaDvPysCh6AcytTRn5e/tables/tblEtDqdJNxAk6mf/records", {
+      if (bitableTokenData.code === 0) {
+        const bitableRecordResp = await fetch("https://open.feishu.cn/open-apis/bitable/v1/apps/LKcMbdHDSavWaFsSgHMc7RoanBd/tables/tbl2PmPVv1SnuLaM/records", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${wikiTokenData.tenant_access_token}`,
+            "Authorization": `Bearer ${bitableTokenData.tenant_access_token}`,
             "Content-Type": "application/json; charset=utf-8"
           },
           body: JSON.stringify({
@@ -486,8 +486,8 @@
             }
           })
         });
-        const wikiRecordData = await wikiRecordResp.json();
-        wikiOk = wikiRecordData.code === 0;
+        const bitableRecordData = await bitableRecordResp.json();
+        bitableOk = bitableRecordData.code === 0;
       }
 
       return botOk || wikiOk;
