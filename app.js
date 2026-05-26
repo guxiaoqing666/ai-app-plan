@@ -401,13 +401,63 @@
 
   async function saveToFeishu(payload) {
     try {
-      // Use a Cloudflare Worker proxy to avoid exposing credentials
-      const response = await fetch("https://zouzou-feedback.guxiaoqing666.workers.dev", {
+      // Send to Feishu group bot webhook
+      const feishuPayload = {
+        msg_type: "interactive",
+        card: {
+          config: { wide_screen_mode: true },
+          header: {
+            title: { tag: "plain_text", content: "📝 走走AI 新反馈" },
+            template: "blue"
+          },
+          elements: [
+            {
+              tag: "div",
+              text: {
+                tag: "lark_md",
+                content: `**联系方式：** ${escapeHtml(payload.contact || "未填写")}`
+              }
+            },
+            {
+              tag: "div",
+              text: {
+                tag: "lark_md",
+                content: `**需求：** ${escapeHtml(payload.need || "未选择")}`
+              }
+            },
+            {
+              tag: "div",
+              text: {
+                tag: "lark_md",
+                content: `**反馈内容：**\n${escapeHtml(payload.message || "未填写")}`
+              }
+            },
+            {
+              tag: "div",
+              text: {
+                tag: "lark_md",
+                content: `**当前路线：** ${escapeHtml(payload.routeId || "未选择")}`
+              }
+            },
+            {
+              tag: "div",
+              text: {
+                tag: "lark_md",
+                content: `**提交时间：** ${new Date(payload.createdAt).toLocaleString("zh-CN")}`
+              }
+            }
+          ]
+        }
+      };
+
+      const response = await fetch("https://open.feishu.cn/open-apis/bot/v2/hook/8710c1a6-cb9e-4abb-b50e-a00a03a07937", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(feishuPayload)
       });
-      return response.ok;
+      
+      const result = await response.json();
+      return result.code === 0;
     } catch (error) {
       return false;
     }
