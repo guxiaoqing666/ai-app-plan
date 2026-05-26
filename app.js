@@ -471,7 +471,7 @@
       let bitableOk = false;
       
       if (bitableTokenData.code === 0) {
-        const bitableRecordResp = await fetch("https://open.feishu.cn/open-apis/bitable/v1/apps/LKcMbdHDSavWaFsSgHMc7RoanBd/tables/tbl2PmPVv1SnuLaM/records", {
+        const bitableRecordResp = await fetch("https://open.feishu.cn/open-apis/bitable/v1/apps/CXyUb8Vk0aZvHrsj4Gvc7OKCnkh/tables/tblaxsIJwbFkNYKk/records", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${bitableTokenData.tenant_access_token}`,
@@ -479,10 +479,10 @@
           },
           body: JSON.stringify({
             fields: {
-              "联系方式": String(payload.contact || "").trim(),
-              "需求": String(payload.need || "").trim(),
-              "反馈内容": String(payload.message || "").trim(),
-              "当前路线ID": String(payload.routeId || "").trim()
+              "contact": String(payload.contact || "").trim(),
+              "need": String(payload.need || "").trim(),
+              "message": String(payload.message || "").trim(),
+              "route_id": String(payload.routeId || "").trim()
             }
           })
         });
