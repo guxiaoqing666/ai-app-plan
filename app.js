@@ -401,8 +401,8 @@
 
   async function saveToFeishu(payload) {
     try {
-      // Send to Feishu group bot webhook
-      const feishuPayload = {
+      // 1. Send to Feishu group bot (instant notification)
+      const botPayload = {
         msg_type: "interactive",
         card: {
           config: { wide_screen_mode: true },
@@ -450,14 +450,47 @@
         }
       };
 
-      const response = await fetch("https://open.feishu.cn/open-apis/bot/v2/hook/8710c1a6-cb9e-4abb-b50e-a00a03a07937", {
+      const botResponse = await fetch("https://open.feishu.cn/open-apis/bot/v2/hook/8710c1a6-cb9e-4abb-b50e-a00a03a07937", {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify(feishuPayload)
+        body: JSON.stringify(botPayload)
       });
+      const botResult = await botResponse.json();
+      const botOk = botResult.code === 0;
+
+      // 2. Save to Wiki Bitable (permanent archive) - direct from frontend
+      const wikiTokenResp = await fetch("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          app_id: "cli_aa9ff8ba15ba1bca",
+          app_secret: "kdTUXIWgRBT3csN9Bfbvbh2M4eFTpG35"
+        })
+      });
+      const wikiTokenData = await wikiTokenResp.json();
+      let wikiOk = false;
       
-      const result = await response.json();
-      return result.code === 0;
+      if (wikiTokenData.code === 0) {
+        const wikiRecordResp = await fetch("https://open.feishu.cn/open-apis/bitable/v1/apps/ALrkbE8ohaDvPysCh6AcytTRn5e/tables/tblEtDqdJNxAk6mf/records", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${wikiTokenData.tenant_access_token}`,
+            "Content-Type": "application/json; charset=utf-8"
+          },
+          body: JSON.stringify({
+            fields: {
+              "联系方式": String(payload.contact || "").trim(),
+              "需求": String(payload.need || "").trim(),
+              "反馈内容": String(payload.message || "").trim(),
+              "当前路线ID": String(payload.routeId || "").trim()
+            }
+          })
+        });
+        const wikiRecordData = await wikiRecordResp.json();
+        wikiOk = wikiRecordData.code === 0;
+      }
+
+      return botOk || wikiOk;
     } catch (error) {
       return false;
     }
